@@ -70,7 +70,13 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
 
             //处理消息
             const fixedMsg = processQQMsg(message);
-            SLogger.info(`OneBotApi ${self_id} 接收 GroupMessage:\n${fixedMsg}`);
+            SLogger.info(
+                `OneBotApi ${self_id} 接收 GroupMessage:\n` +
+                `message: ${message}\n` +
+                `fixedMsg: ${fixedMsg}\n` +
+                `user_id: ${user_id}\n` +
+                `group_id: ${group_id}`
+            );
 
             this.invokeEvent('message',{
                 content : fixedMsg,
@@ -92,7 +98,11 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
 
             //处理消息
             const fixedMsg = processQQMsg(message);
-            SLogger.info(`OneBotApi ${self_id} 接收 PrivateMessage:\n${fixedMsg}`);
+            SLogger.info(`OneBotApi ${self_id} 接收 PrivateMessage:\n` +
+                `message: ${message}\n` +
+                `fixedMsg: ${fixedMsg}\n` +
+                `user_id: ${user_id}`
+            );
 
             this.invokeEvent('message',{
                 content : fixedMsg,
