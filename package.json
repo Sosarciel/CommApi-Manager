@@ -1,0 +1,33 @@
+{
+  "name": "@sosraciel-lamda/commapi-manager",
+  "version": "1.0.16",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "powershell scripts/build",
+    "compile": "powershell scripts/compile",
+    "watch": "powershell scripts/watch",
+    "build-schema": "powershell scripts/build-schema",
+    "init": "deepkit-type-install",
+    "expand-macro": "powershell scripts/expand-macro"
+  },
+  "author": "zwa73",
+  "license": "ISC",
+  "description": "",
+  "files": [
+    "dist",
+    "data",
+    "schema"
+  ],
+  "dependencies": {
+    "@sosraciel-lamda/onebot11-proto-client": "^1.0.7",
+    "@zwa73/audio-utils": "^1.0.24",
+    "@zwa73/utils": "^1.0.234",
+    "discord.js": "^14.17.3",
+    "node-telegram-bot-api": "^0.66.0",
+    "undici": "^6.21.3"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.64.10"
+  }
+}

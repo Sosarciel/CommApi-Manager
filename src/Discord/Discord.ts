@@ -1,0 +1,53 @@
+import { CommApiBase } from "../CommApiBase";
+import { Bridge, BridgeInterface, LogLevel, PRecord, sleep, SLogger } from "@zwa73/utils";
+import { Worker } from "worker_threads";
+import { DiscordOption, DiscordWorkerServerInterface } from "./Interface";
+import path from "path";
+import { BaseCommInterface, SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
+import { AudioCache } from "../Utils";
+
+
+
+/**Discord接口 */
+export class DiscordApi extends CommApiBase implements BaseCommInterface,DiscordWorkerServerInterface{
+    worker?:Worker;
+    taskMap:PRecord<string,(arg:boolean)=>void> = {};
+    charname:string;
+    bridge?:BridgeInterface<SendTool>;
+
+    constructor(public data:DiscordOption){
+        super();
+        this.charname = data.charname;
+        this.startWorker();
+
+    }
+    startWorker() {
+        this.worker = new Worker(path.join(__dirname,'WorkerClient.js'),{workerData:this.data});
+        this.bridge = Bridge.create<SendTool>(
+            this,
+            (data)=>this.worker?.postMessage(data),
+            (onData)=>this.worker?.on('message',onData),
+        );
+        this.worker.on('exit', async (code) => {
+            SLogger.error(`DiscordWorkerClient 关闭 ${code}, 等待2秒后重启...`);
+            await sleep(2000);
+            this.startWorker(); // 自动重启工作线程
+        });
+        this.worker.on('error', (err) => {
+            SLogger.error(`DiscordWorkerClient 错误: ${err.message}`);
+        });
+    }
+    getData(){
+        return this.data;
+    }
+    log(level:LogLevel,message:string){
+        SLogger.log(level,message);
+    }
+    async sendMessage(arg: SendMessageArg){
+        return this.bridge?.sendMessage(arg)??false;
+    }
+    async sendVoice(arg: SendVoiceArg){
+        const wavpath = await AudioCache.acodec2pcms16(arg.voiceFilePath);
+        return this.bridge?.sendVoice({...arg,voiceFilePath:wavpath})??false;
+    }
+}
