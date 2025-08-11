@@ -11,6 +11,14 @@ import { AudioCache } from '../Utils';
 import { TelegramOption, TelegramUserId } from './Interface';
 
 
+const unwarpRegex = /telegram\.(user|group)\.(.+)/;
+const unwarpId = (text?:string) =>{
+    if(text===undefined || text==null) return undefined;
+    const unwarped = unwarpRegex.exec(text)?.[3];
+    if(unwarped!=undefined) return unwarped;
+    SLogger.warn(`TelegramApi unwarpId 获取了一个不合规的id, 已返回原值\ntext: ${text}`);
+    return text;
+};
 
 //ignore
 //(node:355190) [node-telegram-bot-api] DeprecationWarning: In the future, content-type of files you send will default to "application/octet-stream". See https://github.com/yagop/node-telegram-bot-api/blob/master/doc/usage.md#sending-files for more information on how sending files has been improved and on how to disable this deprecation message altogether. (Use `node --trace-deprecation ...` to show where the warning was created)
@@ -45,10 +53,11 @@ export class TelegramApi extends CommApiBase implements BaseCommInterface{
                 const {text,from} = msg;
                 const {id} = from??{};
                 if(id==undefined || text==undefined) return;
-                const uid:TelegramUserId = `tgu_${id}`;
+
+                const fixedUserId:TelegramUserId = `telegram.user.${id}`;
                 this.invokeEvent('message',{
                     content:text,
-                    userId:uid
+                    userId :fixedUserId
                 });
             }catch(e){
                 SLogger.warn(`TelegramApi.onMessage 错误: ${e}`);
@@ -72,7 +81,7 @@ export class TelegramApi extends CommApiBase implements BaseCommInterface{
             };
             const {message,userId} = arg;
 
-            const fixuid = userId.replace('tgu_','');
+            const fixuid = unwarpId(userId)!;
 
             if(message==null || message.length<=0) return true;
 

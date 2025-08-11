@@ -14,5 +14,5 @@ export type TelegramOption = {
     proxy_url?:string;
 }
 
-export type TelegramUserId  = `tgu_${string}`;
-export type TelegramGroupId = `tgg_${string}`;
+export type TelegramUserId  = `telegram.user.${string}`;
+export type TelegramGroupId = `telegram.group.${string}`;

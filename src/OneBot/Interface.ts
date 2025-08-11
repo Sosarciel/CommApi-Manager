@@ -25,7 +25,7 @@ export type OneBotOption = {
 
 export const SubtypeDefineTable = {
     kook:{
-        prefix :'kk',
+        prefix :'kook',
         astCtor:KookActiveSendToolCtor,
     },
     qq:{
@@ -33,7 +33,7 @@ export const SubtypeDefineTable = {
         astCtor:QQActiveSendToolCtor,
     },
     qq_official:{
-        prefix :'qqof',
+        prefix :'qq_official',
         astCtor:QQOfficialActiveSendToolCtor,
     },
 }

@@ -8,10 +8,13 @@ import { SLogger, UtilCodec } from "@zwa73/utils";
 const ListenerPool:Record<string,OneBotListener> = {};
 
 const prefixList = Object.values(SubtypeDefineTable).map(v=>v.prefix);
-const unwarpRegex = new RegExp(`(${prefixList.join('|')})(u|g)_(\\d+)`);
+const unwarpRegex = new RegExp(`(${prefixList.join('|')})\\.(user|group)\\.(\\d+)`);
 const unwarpId = (text?:string)=>{
     if(text==null) return undefined;
-    return unwarpRegex.exec(text)?.[3] ?? text;
+    const unwarped = unwarpRegex.exec(text)?.[3];
+    if(unwarped!=undefined) return unwarped;
+    SLogger.warn(`OneBotApi unwarpId 获取了一个不合规的id, 已返回原值\ntext: ${text}`);
+    return text;
 }
 
 
@@ -71,8 +74,8 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
 
             this.invokeEvent('message',{
                 content : fixedMsg,
-                userId  : `${this.sub.prefix}u_${user_id}`,
-                groupId : `${this.sub.prefix}g_${group_id}`,
+                userId  : `${this.sub.prefix}.user.${user_id}`,
+                groupId : `${this.sub.prefix}.group.${group_id}`,
             });
         });
         listtener.registerEvent("PrivateMessage",pdata=>{

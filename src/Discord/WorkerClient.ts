@@ -13,7 +13,10 @@ class DiscordWorkerClient implements SendTool{
     token:string;
     proxyUrl?:string;
     agent?: ProxyAgent;
-    UserIdChnnelIdMap:Record<DiscordUserId,string>={};
+    /**discord私聊会创建临时频道, 但不自动缓存临时频道Id  
+     * 该映射记录了 userId -> channelId  
+     */
+    UserIdChnnelIdMap:Record<string,string>={};
     client:Client;
     bridge:BridgeInterface<DiscordWorkerServerInterface>;
     constructor(private data:DiscordOption){
@@ -61,14 +64,19 @@ class DiscordWorkerClient implements SendTool{
 
             if(!channel.isSendable()) return;
 
-            const userId:DiscordUserId   = `dcu_${message.author.id}`;
-            const groupId:DiscordGroupId|undefined = message.guildId ? `dcg_${message.guildId}` : undefined;
-            if(message.guildId==null) this.UserIdChnnelIdMap[userId] = message.channelId;
+            const userId = message.author.id;
+            const fixedUserId :DiscordUserId   = `discord.user.${userId}`;
+            const fixedGroupId:DiscordGroupId|undefined = message.guildId
+                ? `discord.group.${message.guildId}` : undefined;
+            //缓存私聊临时频道Id
+            if(message.guildId==null)
+                this.UserIdChnnelIdMap[userId] = message.channelId;
             //跳过非at频道消息
             if(message.guildId!=null && !message.mentions.has(client?.user?.id??'')) return;
             await this.bridge.invokeEvent('message',{
-                content:message.content,
-                userId,groupId,
+                content: message.content,
+                userId : fixedUserId,
+                groupId: fixedGroupId,
             });
             }catch(e){
                 await this.bridge.log('warn', `DiscordApi.onMessage 错误 charName:${this.charname} error:${String(e)}`);
@@ -83,8 +91,8 @@ class DiscordWorkerClient implements SendTool{
         const {message,userId,groupId}=arg;
         let channel:Channel|undefined = undefined;
         channel = groupId==null
-            ? this.client.channels.cache.get(this.UserIdChnnelIdMap[userId as DiscordUserId])
-            : this.client.channels.cache.get(groupId.replace('dcg_',''));
+            ? this.client.channels.cache.get(this.UserIdChnnelIdMap[userId])
+            : this.client.channels.cache.get(groupId);
         if(channel?.isSendable()){
             await channel.send(message);
             return true;
@@ -92,10 +100,10 @@ class DiscordWorkerClient implements SendTool{
         return false;
     }
     async sendVoice(arg: SendVoiceArg){
-        const {senderId,userId,voiceFilePath,groupId}=arg;
+        const {userId,voiceFilePath,groupId}=arg;
         const channel = groupId==null
-            ? this.client.channels.cache.get(this.UserIdChnnelIdMap[userId as DiscordUserId])
-            : this.client.channels.cache.get(groupId.replace('dcg_',''));
+            ? this.client.channels.cache.get(this.UserIdChnnelIdMap[userId])
+            : this.client.channels.cache.get(groupId);
         if(channel?.isSendable()){
             //const oggpath = await transcode2opusogg(voiceFilePath,256);
             const audioBuffer = await fs.promises.readFile(voiceFilePath);

@@ -13,8 +13,8 @@ export type DiscordOption = {
 
 
 
-export type DiscordUserId  = `dcu_${string}`;
-export type DiscordGroupId = `dcg_${string}`;
+export type DiscordUserId  = `discord.user.${string}`;
+export type DiscordGroupId = `discord.group.${string}`;
 
 
 

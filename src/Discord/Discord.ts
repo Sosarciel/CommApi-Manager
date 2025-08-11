@@ -8,6 +8,17 @@ import { AudioCache } from "../Utils";
 
 
 
+const unwarpRegex = /discord\.(user|group)\.(.+)/;
+const unwarpId = (text?:string) =>{
+    if(text===undefined || text==null) return undefined;
+    const unwarped = unwarpRegex.exec(text)?.[3];
+    if(unwarped!=undefined) return unwarped;
+    SLogger.warn(`DiscordApi unwarpId 获取了一个不合规的id, 已返回原值\ntext: ${text}`);
+    return text;
+};
+
+
+
 /**Discord接口 */
 export class DiscordApi extends CommApiBase implements BaseCommInterface,DiscordWorkerServerInterface{
     worker?:Worker;
@@ -44,10 +55,17 @@ export class DiscordApi extends CommApiBase implements BaseCommInterface,Discord
         SLogger.log(level,message);
     }
     async sendMessage(arg: SendMessageArg){
-        return this.bridge?.sendMessage(arg)??false;
+        return this.bridge?.sendMessage({...arg,
+            userId :unwarpId(arg.userId)!,
+            groupId:unwarpId(arg.groupId),
+        })??false;
     }
     async sendVoice(arg: SendVoiceArg){
         const wavpath = await AudioCache.acodec2pcms16(arg.voiceFilePath);
-        return this.bridge?.sendVoice({...arg,voiceFilePath:wavpath})??false;
+        return this.bridge?.sendVoice({...arg,
+            userId :unwarpId(arg.userId)!,
+            groupId:unwarpId(arg.groupId),
+            voiceFilePath:wavpath
+        })??false;
     }
 }
