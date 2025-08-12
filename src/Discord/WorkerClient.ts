@@ -17,6 +17,7 @@ class DiscordWorkerClient implements SendTool{
      * 该映射记录了 userId -> channelId  
      */
     UserIdChnnelIdMap:Record<string,string>={};
+    GroupIdChnnelIdMap:Record<string,string>={};
     client:Client;
     bridge:BridgeInterface<DiscordWorkerServerInterface>;
     constructor(private data:DiscordOption){
@@ -65,12 +66,16 @@ class DiscordWorkerClient implements SendTool{
             if(!channel.isSendable()) return;
 
             const userId = message.author.id;
+            const groupId = message.guildId;
             const fixedUserId :DiscordUserId   = `discord.user.${userId}`;
             const fixedGroupId:DiscordGroupId|undefined = message.guildId
-                ? `discord.group.${message.guildId}` : undefined;
-            //缓存私聊临时频道Id
-            if(message.guildId==null)
+                ? `discord.group.${groupId}` : undefined;
+
+            //缓存频道Id
+            if(groupId==null)
                 this.UserIdChnnelIdMap[userId] = message.channelId;
+            else this.GroupIdChnnelIdMap[groupId] = message.channelId;
+
             //跳过非at频道消息
             if(message.guildId!=null && !message.mentions.has(client?.user?.id??'')) return;
             await this.bridge.invokeEvent('message',{
@@ -92,18 +97,25 @@ class DiscordWorkerClient implements SendTool{
         let channel:Channel|undefined = undefined;
         channel = groupId==null
             ? this.client.channels.cache.get(this.UserIdChnnelIdMap[userId])
-            : this.client.channels.cache.get(groupId);
+            : this.client.channels.cache.get(this.GroupIdChnnelIdMap[groupId]);
         if(channel?.isSendable()){
             await channel.send(message);
             return true;
         }
+        this.bridge.log('warn',`DiscordApi WorkerClient.sendMessage 发送失败\n`+
+            `channelId:${channel?.id}\n` +
+            `channel.isSendable:${channel?.isSendable()}\n`+
+            `userId:${userId}\n`+
+            `groupId:${groupId}\n`+
+            `message:${message}`
+        );
         return false;
     }
     async sendVoice(arg: SendVoiceArg){
         const {userId,voiceFilePath,groupId}=arg;
         const channel = groupId==null
             ? this.client.channels.cache.get(this.UserIdChnnelIdMap[userId])
-            : this.client.channels.cache.get(groupId);
+            : this.client.channels.cache.get(this.GroupIdChnnelIdMap[groupId]);
         if(channel?.isSendable()){
             //const oggpath = await transcode2opusogg(voiceFilePath,256);
             const audioBuffer = await fs.promises.readFile(voiceFilePath);
@@ -111,6 +123,13 @@ class DiscordWorkerClient implements SendTool{
             await channel.send({files:[attr]});
             return true;
         }
+        this.bridge.log('warn',`DiscordApi WorkerClient.sendVoice 发送失败\n`+
+            `channelId:${channel?.id}\n` +
+            `channel.isSendable:${channel?.isSendable()}\n`+
+            `userId:${userId}\n`+
+            `groupId:${groupId}\n`+
+            `voiceFilePath:${voiceFilePath}`
+        );
         return false;
     }
 }
