@@ -1,0 +1,5 @@
+node-telegram-bot-api/src/telegram.js : 298 ->
+    if (options.qs) {
+      this._fixReplyMarkup(options.qs);
+      this._fixReplyParameters(options.qs);
+    }
