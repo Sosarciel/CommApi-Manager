@@ -119,7 +119,7 @@ export class TelegramApi extends CommApiBase implements BaseCommInterface{
 
     async sendVoice(arg:SendVoiceArg) {
         const {voiceFilePath,userId} = arg;
-        const fixuid = userId.replace('tgu_','');
+        const fixuid = unwarpId(userId)!;
         const transfp = await AudioCache.transcode2opusogg(voiceFilePath,256);
         //const buffer = await fs.promises.readFile(transfp);
         //await this.bot.sendAudio(userId,buffer,{},{filename:'voice.m4a'});
