@@ -3,7 +3,7 @@
 
 
 /**Telegram初始化选项 */
-export type TelegramOption = {
+export type TelegramServiceData = {
     /**绑定角色名 */
     charname:string;
     /**登录token*/

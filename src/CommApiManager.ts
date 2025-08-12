@@ -1,17 +1,16 @@
 import { ServiceConfig, ServiceManager, ServiceManagerBaseConfig } from "@zwa73/service-manager";
-import { TelegramOption, TelegramApi } from "./Telegram";
+import { TelegramServiceData, TelegramApi } from "./Telegram";
 import { BaseCommInterface } from "./ChatPlantformInterface";
-import { DiscordApi, DiscordOption } from "./Discord";
-import { throwError } from "@zwa73/utils";
+import { DiscordApi, DiscordServiceData } from "./Discord";
+import { SLogger, throwError } from "@zwa73/utils";
 import { AudioCache, InjectData, InjectTool } from "./Utils";
-import { OneBotApi } from "./OneBot/OneBot";
-import { OneBotOption } from "./OneBot/Interface";
+import { OneBotApi, OneBotServiceData } from "./OneBot";
 
 
 const CtorTable = {
-    Telegram: (table:TelegramOption) => new TelegramApi(table),
-    Discord : (table:DiscordOption)  => new DiscordApi (table),
-    OneBot  : (table:OneBotOption)   => new OneBotApi (table),
+    Telegram: (table:TelegramServiceData) => new TelegramApi(table),
+    Discord : (table:DiscordServiceData)  => new DiscordApi (table),
+    OneBot  : (table:OneBotServiceData)   => new OneBotApi  (table),
 };
 type CtorTable = typeof CtorTable;
 
@@ -43,17 +42,17 @@ export const CommApiManager = new Proxy({} as {ins?:_CommApiManager}, {
     get(target, prop, receiver) {
         if (prop === 'init') {
             return (opt:CommApiManagerOption) => {
-                if (target.ins==null){
-                    AudioCache.CACHE_PATH = opt.cacheDir;
-                    InjectTool.inject(opt.inject);
-                    target.ins = ServiceManager.from<CtorTable,BaseCommInterface>({
-                        cfgPath:opt.tablePath,
-                        ctorTable:CtorTable,
-                    });
-                }
+                if (target.ins!=null)
+                    return SLogger.warn("CommApiManager 出现重复的init调用, 重复的初始化已被跳过");
+                AudioCache.CACHE_PATH = opt.cacheDir;
+                InjectTool.inject(opt.inject);
+                target.ins = ServiceManager.from<CtorTable,BaseCommInterface>({
+                    cfgPath:opt.tablePath,
+                    ctorTable:CtorTable,
+                });
             };
         }
-        if (target.ins==null) throwError("LaMManager 未初始化", 'error');
+        if (target.ins==null) throwError("CommApiManager 未初始化", 'error');
         return Reflect.get(target.ins, prop, receiver);
     }
 }) as any as CommApiManager;

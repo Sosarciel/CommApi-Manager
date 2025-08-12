@@ -1,7 +1,7 @@
 import { OneBotListener } from "@sosraciel-lamda/onebot11-proto-client";
 import { BaseCommInterface, SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
 import { CommApiBase } from "../CommApiBase";
-import { OneBotOption, SubtypeDefine, SubtypeDefineTable } from "./Interface";
+import { OneBotServiceData, SubtypeDefine, SubtypeDefineTable } from "./Interface";
 import { SLogger, UtilCodec } from "@zwa73/utils";
 
 
@@ -40,7 +40,7 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
     ast:SendTool;
     charname: string;
     sub:SubtypeDefine;
-    constructor(public data:OneBotOption) {
+    constructor(public data:OneBotServiceData) {
         super();
         const {listen_port,send_port,subtype,charname} = data;
         this.charname = charname;

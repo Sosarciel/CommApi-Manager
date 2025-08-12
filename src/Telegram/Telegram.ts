@@ -8,7 +8,7 @@ import { BaseCommInterface, SendMessageArg, SendVoiceArg } from '../ChatPlantfor
 import { CommApiBase } from '../CommApiBase';
 import { Failed, SLogger, Success, UtilFunc } from '@zwa73/utils';
 import { AudioCache } from '../Utils';
-import { TelegramOption, TelegramUserId } from './Interface';
+import { TelegramServiceData, TelegramUserId } from './Interface';
 
 
 const unwarpRegex = /telegram\.(user|group)\.(.+)/;
@@ -31,7 +31,7 @@ export class TelegramApi extends CommApiBase implements BaseCommInterface{
     agent?: HttpsProxyAgent;
     bot:TelegramBot;
 
-    constructor(private data:TelegramOption){
+    constructor(private data:TelegramServiceData){
         super();
         this.charname = data.charname;
         this.token = data.token;

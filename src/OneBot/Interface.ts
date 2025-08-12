@@ -7,7 +7,7 @@ import { SendTool } from "@/src/ChatPlantformInterface";
 
 type Subtype = 'kook'|'qq'|'qq_official';
 /**OneBot初始化选项 */
-export type OneBotOption = {
+export type OneBotServiceData = {
     /**绑定角色名 */
     charname:string;
     /**监听端口 */

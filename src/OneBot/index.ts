@@ -1,1 +1,2 @@
-export * from './index';
+export * from './OneBot';
+export * from './Interface';

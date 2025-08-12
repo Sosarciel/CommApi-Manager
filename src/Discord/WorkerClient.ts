@@ -3,7 +3,7 @@ import { ProxyAgent } from "undici";
 import fs from 'fs';
 import { parentPort,workerData } from "worker_threads";
 import { Bridge, BridgeInterface } from "@zwa73/utils";
-import type { DiscordGroupId, DiscordOption, DiscordUserId, DiscordWorkerServerInterface } from "./Interface";
+import type { DiscordGroupId, DiscordServiceData, DiscordUserId, DiscordWorkerServerInterface } from "./Interface";
 import type { SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
 
 
@@ -20,7 +20,7 @@ class DiscordWorkerClient implements SendTool{
     GroupIdChnnelIdMap:Record<string,string>={};
     client:Client;
     bridge:BridgeInterface<DiscordWorkerServerInterface>;
-    constructor(private data:DiscordOption){
+    constructor(private data:DiscordServiceData){
         const {charname,token,proxy_url} = data;
         this.charname = charname;
         this.token = token;

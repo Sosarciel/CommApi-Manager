@@ -2,7 +2,7 @@ import { LogLevel } from "@zwa73/utils";
 import { ListenTool } from "../ChatPlantformInterface";
 
 /**Discord初始化选项 */
-export type DiscordOption = {
+export type DiscordServiceData = {
     /**绑定角色名 */
     charname:string;
     /**登录token*/

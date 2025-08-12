@@ -1,7 +1,7 @@
 import { CommApiBase } from "../CommApiBase";
 import { Bridge, BridgeInterface, LogLevel, PRecord, sleep, SLogger } from "@zwa73/utils";
 import { Worker } from "worker_threads";
-import { DiscordOption, DiscordWorkerServerInterface } from "./Interface";
+import { DiscordServiceData, DiscordWorkerServerInterface } from "./Interface";
 import path from "path";
 import { BaseCommInterface, SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
 import { AudioCache } from "../Utils";
@@ -26,7 +26,7 @@ export class DiscordApi extends CommApiBase implements BaseCommInterface,Discord
     charname:string;
     bridge?:BridgeInterface<SendTool>;
 
-    constructor(public data:DiscordOption){
+    constructor(public data:DiscordServiceData){
         super();
         this.charname = data.charname;
         this.startWorker();
