@@ -11,7 +11,7 @@ import { AudioCache } from "../Utils";
 const unwarpRegex = /discord\.(user|group)\.(.+)/;
 const unwarpId = (text?:string) =>{
     if(text===undefined || text==null) return undefined;
-    const unwarped = unwarpRegex.exec(text)?.[3];
+    const unwarped = unwarpRegex.exec(text)?.[2];
     if(unwarped!=undefined) return unwarped;
     SLogger.warn(`DiscordApi unwarpId 获取了一个不合规的id, 已返回原值\ntext: ${text}`);
     return text;

@@ -106,7 +106,7 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
 
             this.invokeEvent('message',{
                 content : fixedMsg,
-                userId  : `${this.sub.prefix}u_${user_id}`,
+                userId  : `${this.sub.prefix}.user.${user_id}`,
                 groupId : undefined,
             });
         });
