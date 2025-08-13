@@ -42,12 +42,13 @@ export const CommApiManager = UtilFunc.createInjectable({
         AudioCache.CACHE_PATH = opt.cacheDir;
         InjectTool.inject(opt.inject);
         const mgr = ServiceManager.from({
-                cfgPath:opt.tablePath,
-                ctorTable:CtorTable,
+            cfgPath:opt.tablePath,
+            ctorTable:CtorTable,
         });
         return mgr;
     }
 });
+export type CommApiManager = typeof CommApiManager;
 //void (async()=>{
 //    const ts = await CommApiManager.getServiceFromType('Telegram');
 //    ts.forEach(t=>t.instance.)
