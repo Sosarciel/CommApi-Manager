@@ -38,7 +38,7 @@ type CommApiManagerOption = {
 
 /**语言模型管理器 需先调用init */
 export const CommApiManager = UtilFunc.createInjectable({
-    initInject(opt:CommApiManagerOption):_CommApiManager{
+    initInject(opt:CommApiManagerOption){
         AudioCache.CACHE_PATH = opt.cacheDir;
         InjectTool.inject(opt.inject);
         const mgr = ServiceManager.from({
@@ -47,8 +47,7 @@ export const CommApiManager = UtilFunc.createInjectable({
         });
         return mgr;
     }
-} as const);
-export type CommApiManager = typeof CommApiManager;
+});
 //void (async()=>{
 //    const ts = await CommApiManager.getServiceFromType('Telegram');
 //    ts.forEach(t=>t.instance.)
