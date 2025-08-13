@@ -43,7 +43,7 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
             polling:true,
             ...opt
         });
-        this.bot.on('message', (msg) => {
+        this.bot.on('message', msg => {
             SLogger.http(`TelegramApi.onMessage ${this.charname}`,msg);
             try{
                 const {text,from} = msg;
@@ -55,8 +55,8 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
                     content:text,
                     userId :fixedUserId
                 });
-            }catch(e){
-                SLogger.warn(`TelegramApi.onMessage 错误: ${e}`);
+            }catch(err){
+                SLogger.warn(`TelegramApi.onMessage 错误: `,err);
             }
         });
     }
@@ -106,8 +106,8 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
                 SLogger.warn(`TelegramApi.sendMessage 发送md格式失败 尝试发送普通消息\nmdmsg: ${mdmsg}`);
                 const resp = await this.bot.sendMessage(fixuid, message,opt);
             }
-        }catch(e){
-            SLogger.warn(`TelegramApi.sendMessage 错误: ${e}\nArg: ${UtilFunc.stringifyJToken(arg,{space:2,compress:true})}`);
+        }catch(err){
+            SLogger.warn(`TelegramApi.sendMessage 错误: `,err,`Arg: ${UtilFunc.stringifyJToken(arg,{space:2,compress:true})}`);
             return false;
         }
         return true;
