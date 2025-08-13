@@ -2,7 +2,7 @@ import { ServiceConfig, ServiceManager, ServiceManagerBaseConfig } from "@zwa73/
 import { TelegramServiceData, TelegramApi } from "./Telegram";
 import { BaseCommInterface } from "./ChatPlantformInterface";
 import { DiscordApi, DiscordServiceData } from "./Discord";
-import { SLogger, throwError } from "@zwa73/utils";
+import { SLogger, throwError, UtilFunc } from "@zwa73/utils";
 import { AudioCache, InjectData, InjectTool } from "./Utils";
 import { OneBotApi, OneBotServiceData } from "./OneBot";
 
@@ -37,27 +37,18 @@ type CommApiManagerOption = {
 }
 
 /**语言模型管理器 需先调用init */
-export type CommApiManager = _CommApiManager&{init:(opt:CommApiManagerOption)=>void};
-export const CommApiManager = new Proxy({} as {ins?:_CommApiManager}, {
-    get(target, prop, receiver) {
-        if (prop === 'init') {
-            return (opt:CommApiManagerOption) => {
-                if (target.ins!=null)
-                    return SLogger.warn("CommApiManager 出现重复的init调用, 重复的初始化已被跳过");
-                AudioCache.CACHE_PATH = opt.cacheDir;
-                InjectTool.inject(opt.inject);
-                target.ins = ServiceManager.from<CtorTable,BaseCommInterface>({
-                    cfgPath:opt.tablePath,
-                    ctorTable:CtorTable,
-                });
-            };
-        }
-        if (target.ins==null) throwError("CommApiManager 未初始化", 'error');
-        return Reflect.get(target.ins, prop, receiver);
+export const CommApiManager = UtilFunc.createInjectable({
+    initInject(opt:CommApiManagerOption):_CommApiManager{
+        AudioCache.CACHE_PATH = opt.cacheDir;
+        InjectTool.inject(opt.inject);
+        const mgr = ServiceManager.from({
+                cfgPath:opt.tablePath,
+                ctorTable:CtorTable,
+        });
+        return mgr;
     }
-}) as any as CommApiManager;
-
-
+} as const);
+export type CommApiManager = typeof CommApiManager;
 //void (async()=>{
 //    const ts = await CommApiManager.getServiceFromType('Telegram');
 //    ts.forEach(t=>t.instance.)
