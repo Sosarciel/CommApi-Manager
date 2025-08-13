@@ -1,7 +1,5 @@
 import { ServiceInterface } from "@zwa73/service-manager";
-
-
-
+import { EventSystem } from "@zwa73/utils";
 
 
 export type SendBaseArg = {
@@ -38,18 +36,6 @@ export type SendTool = {
 }
 
 
-/**基础监听器事件 */
-export type ListenerEvent<T extends keyof ListenerEventTable> = {
-    /**事件类型 */
-    eventType:T
-    /**权重 */
-    weight:number;
-    /**事件ID */
-    id:string;
-    /**事件函数 */
-    event:ListenerEventTable[T];
-}
-
 /**基础监听器事件表 */
 export type ListenerEventTable ={
     /**文本消息事件 */
@@ -59,27 +45,10 @@ export type ListenerEventTable ={
         groupId?:string,
     })=>void;
 }
-/**监听器事件数据表 */
-export type ListenerEventDataTable = {
-    [K in keyof ListenerEventTable]:Parameters<ListenerEventTable[K]>[0]
-}
-/**监听器事件类型表 */
-export type ListenerEventType = keyof ListenerEventTable;
 
 /**监听工具 */
-export type ListenTool = {
-    /**注册事件
-     * @param event - 事件
-     */
-    registerEvent<T extends ListenerEventType>(event:ListenerEvent<T>):void;
-    /**执行事件
-     * @param eventType - 事件类型
-     * @param opt       - 事件参数
-     * @returns 最好返回显式 undefined 以支持桥
-     */
-    invokeEvent<T extends ListenerEventType>(eventType:T,opt:ListenerEventDataTable[T]):void;
-}
-
+export type ListenTool = EventSystem<ListenerEventTable>;
+export const ListenToolBase = class extends EventSystem<ListenerEventTable>{isRuning(){return true;}};
 
 /**基础接口数据 */
 export type BaseData = {

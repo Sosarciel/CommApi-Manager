@@ -1,6 +1,5 @@
 import { OneBotListener } from "@sosraciel-lamda/onebot11-proto-client";
-import { BaseCommInterface, SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
-import { CommApiBase } from "../CommApiBase";
+import { BaseCommInterface, ListenToolBase, SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
 import { OneBotServiceData, SubtypeDefine, SubtypeDefineTable } from "./Interface";
 import { SLogger, UtilCodec } from "@zwa73/utils";
 
@@ -36,7 +35,7 @@ function processQQMsg(msg: string) {
     return msg;
 }
 
-export class OneBotApi extends CommApiBase implements BaseCommInterface{
+export class OneBotApi extends ListenToolBase implements BaseCommInterface{
     ast:SendTool;
     charname: string;
     sub:SubtypeDefine;
@@ -51,7 +50,7 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
 
         const listtener = ListenerPool[listen_port];
         //设置监听
-        listtener.registerEvent("GroupMessage",gdata=>{
+        listtener.registerEvent("GroupMessage",{handler:gdata=>{
             const {message,user_id,group_id,self_id} = gdata;
             if(typeof message != "string"){
                 SLogger.warn("OneBotApi GroupMessage 消息类型错误",message);
@@ -83,8 +82,8 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
                 userId  : `${this.sub.prefix}.user.${user_id}`,
                 groupId : `${this.sub.prefix}.group.${group_id}`,
             });
-        });
-        listtener.registerEvent("PrivateMessage",pdata=>{
+        }});
+        listtener.registerEvent("PrivateMessage",{handler:pdata=>{
             const {message,user_id,self_id} = pdata;
             if(typeof message != "string"){
                 SLogger.warn("OneBotApi PrivateMessage 消息类型错误",message);
@@ -109,7 +108,7 @@ export class OneBotApi extends CommApiBase implements BaseCommInterface{
                 userId  : `${this.sub.prefix}.user.${user_id}`,
                 groupId : undefined,
             });
-        });
+        }});
     }
     sendMessage(arg: SendMessageArg){
         return this.ast.sendMessage({...arg,
