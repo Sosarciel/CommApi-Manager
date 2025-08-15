@@ -14,7 +14,7 @@ export type DiscordServiceData = {
 
 
 export type DiscordUserId  = `discord.user.${string}`;
-export type DiscordGroupId = `discord.group.${string}`;
+export type DiscordGuildId = `discord.guild.${string}`;
 export type DiscordChannelId = `discord.channel.${string}`;
 
 

@@ -7,7 +7,7 @@ import { AudioCache } from '../Utils';
 import { TelegramServiceData, TelegramUserId } from './Interface';
 
 
-const unwarpRegex = /telegram\.(user|group)\.(.+)/;
+const unwarpRegex = /telegram\.(user)\.(.+)/;
 const unwarpId = (text?:string) =>{
     if(text===undefined || text==null) return undefined;
     const unwarped = unwarpRegex.exec(text)?.[2];

@@ -3,7 +3,7 @@ import { ProxyAgent } from "undici";
 import fs from 'fs';
 import { parentPort,workerData } from "worker_threads";
 import { Bridge, BridgeInterface } from "@zwa73/utils";
-import type { DiscordGroupId, DiscordServiceData, DiscordUserId, DiscordWorkerServerInterface } from "./Interface";
+import type { DiscordChannelId, DiscordGuildId, DiscordServiceData, DiscordUserId, DiscordWorkerServerInterface } from "./Interface";
 import type { SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
 
 
@@ -68,9 +68,9 @@ class DiscordWorkerClient implements SendTool{
             const userId = message.author.id;
             const groupId = message.guildId;
             const fixedUserId :DiscordUserId   = `discord.user.${userId}`;
-            const fixedGuildId:DiscordGroupId|undefined = message.guildId
-                ? `discord.group.${groupId}` : undefined;
-            const fixedChannelId = `discord.channel.${channel.id}`;
+            const fixedGuildId:DiscordGuildId|undefined = message.guildId
+                ? `discord.guild.${groupId}` : undefined;
+            const fixedChannelId:DiscordChannelId = `discord.channel.${channel.id}`;
 
             //跳过非at频道消息
             if(message.guildId!=null && !message.mentions.has(client?.user?.id??'')) return;

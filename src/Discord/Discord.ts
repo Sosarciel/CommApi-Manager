@@ -7,7 +7,7 @@ import { AudioCache } from "../Utils";
 
 
 
-const unwarpRegex = /discord\.(user|group)\.(.+)/;
+const unwarpRegex = /discord\.(user|guild|channel)\.(.+)/;
 const unwarpId = (text?:string) =>{
     if(text===undefined || text==null) return undefined;
     const unwarped = unwarpRegex.exec(text)?.[2];
