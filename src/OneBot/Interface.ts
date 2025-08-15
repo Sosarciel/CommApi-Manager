@@ -25,21 +25,21 @@ export type OneBotServiceData = {
 
 export const SubtypeDefineTable = {
     kook:{
-        prefix :'kook',
+        flag :'kook',
         astCtor:KookActiveSendToolCtor,
     },
     qq:{
-        prefix :'qq',
+        flag :'qq',
         astCtor:QQActiveSendToolCtor,
     },
     qq_official:{
-        prefix :'qq_official',
+        flag :'qq_official',
         astCtor:QQOfficialActiveSendToolCtor,
     },
 }
 
 export type SubtypeDefine = {
-    prefix:string;
+    flag:string;
     astCtor:(port:number)=>SendTool;
 }
 assertType<Record<Subtype,SubtypeDefine>>(SubtypeDefineTable);

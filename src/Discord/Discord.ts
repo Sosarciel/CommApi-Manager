@@ -54,15 +54,15 @@ export class DiscordApi extends ListenToolBase implements BaseCommInterface,Disc
     }
     async sendMessage(arg: SendMessageArg){
         return this.bridge?.sendMessage({...arg,
-            userId :unwarpId(arg.userId)!,
-            groupId:unwarpId(arg.groupId),
+            userId    : unwarpId(arg.userId)!,
+            channelId : unwarpId(arg.channelId)!,
         })??false;
     }
     async sendVoice(arg: SendVoiceArg){
         const wavpath = await AudioCache.acodec2pcms16(arg.voiceFilePath);
         return this.bridge?.sendVoice({...arg,
-            userId :unwarpId(arg.userId)!,
-            groupId:unwarpId(arg.groupId),
+            userId    : unwarpId(arg.userId)!,
+            channelId : unwarpId(arg.channelId)!,
             voiceFilePath:wavpath
         })??false;
     }

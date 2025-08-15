@@ -75,15 +75,14 @@ export const QQActiveSendToolCtor = (port:number):SendTool=>{
     const sender = new OneBotSender('127.0.0.1', port);
     return {
         async sendMessage(params:SendMessageArg): Promise<boolean>{
-            const { groupId, userId, message, senderId } = params;
+            const { channelId, userId, message, senderId } = params;
 
             const notCQ = true;
-            const ngroupId = parseInt(`${groupId}`);
-            const nuserId = parseInt(userId);
+            const nChannelId = parseInt(channelId);
             await match(chkType(params),{
                 "group_message":async ()=>{
                     if (notCQ != true)
-                        return void sender.sendGroupMsg(ngroupId, message, notCQ);
+                        return void sender.sendGroupMsg(nChannelId, message, notCQ);
 
                     const respArr = clipMessage(message, 80);
                     let firstClip = true;
@@ -94,13 +93,13 @@ export const QQActiveSendToolCtor = (port:number):SendTool=>{
                             firstClip = false;
                             await UtilFunc.sleep(500 + rdelay);
                         } else await UtilFunc.sleep(1000 + pdelay + rdelay);
-                        void sender.sendGroupMsg(ngroupId, clipMsg, notCQ);
+                        void sender.sendGroupMsg(nChannelId, clipMsg, notCQ);
                     }
                     await UtilFunc.sleep(1000 + Math.floor((Math.random() * 500)));
                 },
                 "private_message":async ()=>{
                     if (notCQ != true)
-                        return void sender.sendPrivateMsg(nuserId, message, notCQ);
+                        return void sender.sendPrivateMsg(nChannelId, message, notCQ);
 
                     const respArr = clipMessage(message, 80);
                     let firstClip = true;
@@ -111,7 +110,7 @@ export const QQActiveSendToolCtor = (port:number):SendTool=>{
                             firstClip = false;
                             await UtilFunc.sleep(500 + rdelay);
                         } else await UtilFunc.sleep(1000 + pdelay + rdelay);
-                        void sender.sendPrivateMsg(nuserId, clipMsg, notCQ);
+                        void sender.sendPrivateMsg(nChannelId, clipMsg, notCQ);
                     }
                     await UtilFunc.sleep(1000 + Math.floor((Math.random() * 500)));
                 }
@@ -120,11 +119,10 @@ export const QQActiveSendToolCtor = (port:number):SendTool=>{
         },
 
         async sendVoice(params:SendVoiceArg ): Promise<boolean> {
-            const { groupId, userId, senderId,voiceFilePath } = params;
+            const { channelId, userId, senderId,voiceFilePath } = params;
 
             const notCQ = false;
-            const ngroupId = parseInt(`${groupId}`);
-            const nuserId = parseInt(userId);
+            const nChannelId = parseInt(channelId);
             const fixvoiceFilePath = await AudioCache.acodec2pcms16(voiceFilePath);
             const voiceCQ = CQCodeTool.fileRecord(fixvoiceFilePath);
             await match(chkType(params),{
@@ -134,11 +132,11 @@ export const QQActiveSendToolCtor = (port:number):SendTool=>{
                         ? Math.floor(duration * 1000 + Math.random() * 1000)
                         : 30_000;
                     await UtilFunc.sleep(dur);
-                    void sender.sendGroupMsg(ngroupId, voiceCQ, notCQ);
+                    void sender.sendGroupMsg(nChannelId, voiceCQ, notCQ);
                 },
                 "private_message":async ()=>{
                     await UtilFunc.sleep(1000);
-                    void sender.sendPrivateMsg(nuserId, voiceCQ, notCQ);
+                    void sender.sendPrivateMsg(nChannelId, voiceCQ, notCQ);
                 }
             });
             return true;

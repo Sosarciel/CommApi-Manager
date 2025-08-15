@@ -13,26 +13,25 @@ export const KookActiveSendToolCtor = (port:number):SendTool=>{
 
     return {
         async sendMessage(params:SendMessageArg): Promise<boolean> {
-            const { groupId, userId, message, senderId } = params;
+            const { channelId, message } = params;
 
             const notCQ = true;
-            const ngroupId = parseInt(groupId + "");
-            const nuserId  = parseInt(userId);
+            const nChannelId = parseInt(channelId);
             const fixmessage = message.replace(/^\*(.+)\*$/gm,'**`*$1*`**');
             await match(chkType(params),{
                 "group_message":async ()=>{
                     await sleep(500 + Math.floor( Math.random() * 500));
-                    void sender.sendGroupMsg(ngroupId, fixmessage, notCQ);
+                    void sender.sendGroupMsg(nChannelId, fixmessage, notCQ);
                 },
                 "private_message":async ()=>{
                     await sleep(500 + Math.floor( Math.random() * 500));
-                    void sender.sendPrivateMsg(nuserId, fixmessage, notCQ);
+                    void sender.sendPrivateMsg(nChannelId, fixmessage, notCQ);
                 }
             });
             return true;
         },
         async sendVoice(params:SendVoiceArg): Promise<boolean> {
-            const { groupId, userId, voiceFilePath, senderId } = params;
+            const { channelId, voiceFilePath } = params;
 
 
             const notCQ = false;
@@ -44,16 +43,15 @@ export const KookActiveSendToolCtor = (port:number):SendTool=>{
             const data = await fs.promises.readFile(wavpath);
             const base64 = data.toString('base64');
             const voiceCQ = CQCodeTool.base64Record(base64);
-            const ngroupId = parseInt(groupId + "");
-            const nuserId = parseInt(userId);
+            const nChannelId = parseInt(channelId);
             await match(chkType(params),{
                 "group_message":async ()=>{
                     await sleep(500 + Math.floor( Math.random() * 500));
-                    void sender.sendGroupMsg(ngroupId, voiceCQ, notCQ);
+                    void sender.sendGroupMsg(nChannelId, voiceCQ, notCQ);
                 },
                 "private_message":async()=>{
                     await sleep(500 + Math.floor( Math.random() * 500));
-                    void sender.sendPrivateMsg(nuserId, voiceCQ, notCQ);
+                    void sender.sendPrivateMsg(nChannelId, voiceCQ, notCQ);
                 },
             })
             return true;

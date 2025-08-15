@@ -52,8 +52,10 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
 
                 const fixedUserId:TelegramUserId = `telegram.user.${id}`;
                 this.invokeEvent('message',{
-                    content:text,
-                    userId :fixedUserId
+                    content   : text,
+                    userId    : fixedUserId,
+                    channelId : fixedUserId,
+                    sourceSet : ["telegram",fixedUserId]
                 });
             }catch(err){
                 SLogger.warn(`TelegramApi.onMessage 错误: `,err);
@@ -75,9 +77,9 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
                     one_time_keyboard: true
                 }
             };
-            const {message,userId} = arg;
+            const {message,channelId} = arg;
 
-            const fixuid = unwarpId(userId)!;
+            const fixcid = unwarpId(channelId)!;
 
             if(message==null || message.length<=0) return true;
 
@@ -90,7 +92,7 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
             const mdmsg = message.replace(/\n/gm,'\n\n');
             const retryStatus = await UtilFunc.retryPromise(async ()=>{
                 try{
-                    const resp = await this.bot.sendMessage(fixuid, mdmsg,{
+                    const resp = await this.bot.sendMessage(fixcid, mdmsg,{
                         ...opt,
                         parse_mode:"Markdown"
                     });
@@ -104,7 +106,7 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
 
             if(retryStatus.completed==undefined){
                 SLogger.warn(`TelegramApi.sendMessage 发送md格式失败 尝试发送普通消息\nmdmsg: ${mdmsg}`);
-                const resp = await this.bot.sendMessage(fixuid, message,opt);
+                const resp = await this.bot.sendMessage(fixcid, message,opt);
             }
         }catch(err){
             SLogger.warn(`TelegramApi.sendMessage 错误: `,err,`Arg: ${UtilFunc.stringifyJToken(arg,{space:2,compress:true})}`);

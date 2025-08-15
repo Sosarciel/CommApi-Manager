@@ -6,7 +6,7 @@ import { SLogger, UtilCodec } from "@zwa73/utils";
 
 const ListenerPool:Record<string,OneBotListener> = {};
 
-const prefixList = Object.values(SubtypeDefineTable).map(v=>v.prefix);
+const prefixList = Object.values(SubtypeDefineTable).map(v=>v.flag);
 const unwarpRegex = new RegExp(`(${prefixList.join('|')})\\.(user|group)\\.(\\d+)`);
 const unwarpId = (text?:string)=>{
     if(text==null) return undefined;
@@ -77,10 +77,13 @@ export class OneBotApi extends ListenToolBase implements BaseCommInterface{
                 `group_id: ${group_id}`
             );
 
+            const fixedUserId  = `${this.sub.flag}.user.${user_id}`;
+            const fixedGroupId = `${this.sub.flag}.group.${group_id}`;
             this.invokeEvent('message',{
-                content : fixedMsg,
-                userId  : `${this.sub.prefix}.user.${user_id}`,
-                groupId : `${this.sub.prefix}.group.${group_id}`,
+                content   : fixedMsg,
+                userId    : fixedUserId,
+                channelId : fixedGroupId,
+                sourceSet : [this.sub.flag,fixedGroupId,fixedUserId]
             });
         }});
         listtener.registerEvent("PrivateMessage",{handler:pdata=>{
@@ -103,23 +106,25 @@ export class OneBotApi extends ListenToolBase implements BaseCommInterface{
                 `user_id: ${user_id}`
             );
 
+            const fixedUserId = `${this.sub.flag}.user.${user_id}`;
             this.invokeEvent('message',{
-                content : fixedMsg,
-                userId  : `${this.sub.prefix}.user.${user_id}`,
-                groupId : undefined,
+                content   : fixedMsg,
+                userId    : fixedUserId,
+                channelId : fixedUserId,
+                sourceSet : [this.sub.flag,fixedUserId],
             });
         }});
     }
     sendMessage(arg: SendMessageArg){
         return this.ast.sendMessage({...arg,
-            userId:unwarpId(arg.userId)!,
-            groupId:unwarpId(arg.groupId)
+            userId    : unwarpId(arg.userId)!,
+            channelId : unwarpId(arg.channelId)!
         });
     }
     sendVoice(arg:SendVoiceArg){
         return this.ast.sendVoice({...arg,
-            userId:unwarpId(arg.userId)!,
-            groupId:unwarpId(arg.groupId)
+            userId    : unwarpId(arg.userId)!,
+            channelId : unwarpId(arg.channelId)!
         });
     }
     getData(){
