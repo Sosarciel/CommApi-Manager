@@ -78,7 +78,9 @@ class DiscordWorkerClient implements SendTool{
                 content   : message.content,
                 userId    : fixedUserId,
                 channelId : fixedChannelId,
-                sourceSet : ["discord",fixedChannelId,fixedUserId,...(fixedGuildId??[])],
+                sourceSet : fixedGuildId!=undefined
+                    ? ["discord",fixedChannelId,fixedUserId,fixedGuildId]
+                    : ["discord",fixedChannelId,fixedUserId],
             });
             }catch(e){
                 await this.bridge.log('warn', `DiscordApi.onMessage 错误 charName:${this.charname} error:${String(e)}`);
