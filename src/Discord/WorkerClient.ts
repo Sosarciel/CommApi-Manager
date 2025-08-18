@@ -27,11 +27,11 @@ class DiscordWorkerClient implements SendTool{
         this.proxyUrl = proxy_url;
         if(this.proxyUrl) this.agent = new ProxyAgent(this.proxyUrl);
 
-        this.bridge = Bridge.create<DiscordWorkerServerInterface>(
-            this,
-            (data)=>parentPort?.postMessage(data),
-            (onData)=>parentPort?.on('message',onData),
-        );
+        this.bridge = Bridge.create<DiscordWorkerServerInterface>({
+            client:this,
+            send:(data)=>parentPort?.postMessage(data),
+            init:(onData)=>parentPort?.on('message',onData),
+        });
         const client = new Client({
             intents: [
                 GatewayIntentBits.Guilds,

@@ -32,11 +32,11 @@ export class DiscordApi extends ListenToolBase implements BaseCommInterface,Disc
     }
     startWorker() {
         this.worker = new Worker(path.join(__dirname,'WorkerClient.js'),{workerData:this.data});
-        this.bridge = Bridge.create<SendTool>(
-            this,
-            (data)=>this.worker?.postMessage(data),
-            (onData)=>this.worker?.on('message',onData),
-        );
+        this.bridge = Bridge.create<SendTool>({
+            client:this,
+            send:(data)=>this.worker?.postMessage(data),
+            init:(onData)=>this.worker?.on('message',onData),
+        });
         this.worker.on('exit', async (code) => {
             SLogger.error(`DiscordWorkerClient 关闭 ${code}, 等待2秒后重启...`);
             await sleep(2000);
