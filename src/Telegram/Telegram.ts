@@ -101,7 +101,7 @@ export class TelegramApi extends ListenToolBase implements BaseCommInterface{
                     return undefined;
                 }
             },v=>v ?? Failed,{
-                tryDelay:1000,tryInterval:-1,count:3,flag:"TelegramApi.sendMessage"
+                tryDelay:1000,tryInterval:-1,count:3,logFlag:"TelegramApi.sendMessage"
             });
 
             if(retryStatus.completed==undefined){
