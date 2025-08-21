@@ -50,7 +50,7 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
 
             //处理消息
             const fixedMsg = getTrans(content);
-            SLogger.info(
+            SLogger.http(
                 `KOOKApi ${self_id} 接收 GroupMessage:\n` +
                 `content: ${content}\n` +
                 `fixedMsg: ${fixedMsg}\n` +
@@ -81,7 +81,7 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
 
             //处理消息
             const fixedMsg = getTrans(content);
-            SLogger.info(
+            SLogger.http(
                 `KOOKApi ${self_id} 接收 PrivateMessage:\n` +
                 `content: ${content}\n` +
                 `fixedMsg: ${fixedMsg}\n` +

@@ -69,7 +69,7 @@ export class OneBotApi extends ListenToolBase implements BaseCommInterface{
 
             //处理消息
             const fixedMsg = getTrans(message);
-            SLogger.info(
+            SLogger.http(
                 `OneBotApi ${self_id} 接收 GroupMessage:\n` +
                 `message: ${message}\n` +
                 `fixedMsg: ${fixedMsg}\n` +
@@ -100,7 +100,7 @@ export class OneBotApi extends ListenToolBase implements BaseCommInterface{
 
             //处理消息
             const fixedMsg = getTrans(message);
-            SLogger.info(`OneBotApi ${self_id} 接收 PrivateMessage:\n` +
+            SLogger.http(`OneBotApi ${self_id} 接收 PrivateMessage:\n` +
                 `message: ${message}\n` +
                 `fixedMsg: ${fixedMsg}\n` +
                 `user_id: ${user_id}`
