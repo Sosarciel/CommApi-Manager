@@ -39,9 +39,9 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
             const {guild_id} = extra;
 
             // 跳过自身
-            if (`${self_id}` != author_id) return;
+            if (`${self_id}` == author_id) return;
             // 跳过非文本
-            if(type!=1) return;
+            if(type!=1 && type!=9) return;
 
             // 判断被at
             const atme = content.includes(`(rol)${self_id}(rol)`);
@@ -73,9 +73,9 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
             const {author_id,content,type} = pdata;
 
             // 跳过自身
-            if (`${self_id}` != author_id) return;
+            if (`${self_id}` == author_id) return;
             // 跳过非文本
-            if(type!=1) return;
+            if(type!=1 && type!=9) return;
 
             if (content.length < 2) return;
 
@@ -96,6 +96,7 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
                 sourceSet : ['kook',fixedUserId]
             });
         }});
+        client.start();
     }
     async sendMessage(arg: SendMessageArg){
         const {channelId,userId,message} = arg;
