@@ -85,7 +85,7 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
                 `KOOKApi ${self_id} 接收 PrivateMessage:\n` +
                 `content: ${content}\n` +
                 `fixedMsg: ${fixedMsg}\n` +
-                `author_id: ${author_id}\n`
+                `author_id: ${author_id}`
             );
 
             const fixedUserId  = `kook.user.${author_id}`;
