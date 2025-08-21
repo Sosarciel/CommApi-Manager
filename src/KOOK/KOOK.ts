@@ -51,7 +51,7 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
             //处理消息
             const fixedMsg = getTrans(content);
             SLogger.info(
-                `OneBotApi ${self_id} 接收 GroupMessage:\n` +
+                `KOOKApi ${self_id} 接收 GroupMessage:\n` +
                 `content: ${content}\n` +
                 `fixedMsg: ${fixedMsg}\n` +
                 `author_id: ${author_id}\n` +
@@ -82,7 +82,7 @@ export class KOOKApi extends ListenToolBase implements BaseCommInterface{
             //处理消息
             const fixedMsg = getTrans(content);
             SLogger.info(
-                `OneBotApi ${self_id} 接收 PrivateMessage:\n` +
+                `KOOKApi ${self_id} 接收 PrivateMessage:\n` +
                 `content: ${content}\n` +
                 `fixedMsg: ${fixedMsg}\n` +
                 `author_id: ${author_id}\n`

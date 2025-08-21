@@ -19,7 +19,7 @@
 						"instance_table": {
 							"type": "object",
 							"additionalProperties": {
-								"$ref": "#/definitions/ServiceConfig<{Telegram:(table:TelegramOption)=>TelegramApi;Discord:(table:DiscordOption)=>DiscordApi;OneBot:(table:OneBotOption)=>OneBotApi;}>"
+								"$ref": "#/definitions/ServiceConfig<{Telegram:(table:TelegramServiceData)=>TelegramApi;Discord:(table:DiscordServiceData)=>DiscordApi;OneBot:(table:OneBotServiceData)=>OneBotApi;KOOK:(table:KOOKServiceData)=>KOOKApi;}>"
 							}
 						}
 					},
@@ -29,7 +29,7 @@
 				}
 			]
 		},
-		"ServiceConfig<{Telegram:(table:TelegramOption)=>TelegramApi;Discord:(table:DiscordOption)=>DiscordApi;OneBot:(table:OneBotOption)=>OneBotApi;}>": {
+		"ServiceConfig<{Telegram:(table:TelegramServiceData)=>TelegramApi;Discord:(table:DiscordServiceData)=>DiscordApi;OneBot:(table:OneBotServiceData)=>OneBotApi;KOOK:(table:KOOKServiceData)=>KOOKApi;}>": {
 			"description": "服务构造函数表所对应的单个服务的配置表\n将 类型:工厂函数 映射 转换为完整配置文件",
 			"anyOf": [
 				{
@@ -157,6 +157,48 @@
 							]
 						}
 					]
+				},
+				{
+					"allOf": [
+						{
+							"description": "服务基础配置",
+							"type": "object",
+							"properties": {
+								"name": {
+									"description": "服务实例名",
+									"type": "string"
+								},
+								"rollback": {
+									"description": "此服务若失败则尝试回退的实例名",
+									"type": "string"
+								},
+								"resource_usage": {
+									"description": "此服务的资源占用量\n省略将视为0\n小于等于0时不会尝试卸载",
+									"type": "number"
+								}
+							},
+							"required": [
+								"name"
+							]
+						},
+						{
+							"type": "object",
+							"properties": {
+								"type": {
+									"$ref": "#/definitions/P_3",
+									"description": "服务类型"
+								},
+								"data": {
+									"$ref": "#/definitions/Opt_3",
+									"description": "此实例的初始化数据"
+								}
+							},
+							"required": [
+								"data",
+								"type"
+							]
+						}
+					]
 				}
 			]
 		},
@@ -274,6 +316,36 @@
 		},
 		"Opt_2": {
 			"$ref": "#/definitions/__type_2"
+		},
+		"P_3": {
+			"type": "string",
+			"const": "KOOK"
+		},
+		"__type_3": {
+			"description": "KOOK初始化选项",
+			"type": "object",
+			"properties": {
+				"charname": {
+					"description": "绑定角色名",
+					"type": "string"
+				},
+				"token": {
+					"description": "登录token",
+					"type": "string"
+				},
+				"self_id": {
+					"description": "自身id",
+					"type": "string"
+				}
+			},
+			"required": [
+				"charname",
+				"self_id",
+				"token"
+			]
+		},
+		"Opt_3": {
+			"$ref": "#/definitions/__type_3"
 		}
 	}
 }

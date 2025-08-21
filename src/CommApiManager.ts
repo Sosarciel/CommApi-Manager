@@ -4,12 +4,14 @@ import { DiscordApi, DiscordServiceData } from "./Discord";
 import { UtilFunc } from "@zwa73/utils";
 import { AudioCache, InjectData, InjectTool } from "./Utils";
 import { OneBotApi, OneBotServiceData } from "./OneBot";
+import { KOOKApi, KOOKServiceData } from "./KOOK";
 
 
 const CtorTable = {
     Telegram: (table:TelegramServiceData) => new TelegramApi(table),
     Discord : (table:DiscordServiceData)  => new DiscordApi (table),
     OneBot  : (table:OneBotServiceData)   => new OneBotApi  (table),
+    KOOK    : (table:KOOKServiceData)     => new KOOKApi  (table),
 };
 type CtorTable = typeof CtorTable;
 
