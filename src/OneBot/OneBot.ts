@@ -1,4 +1,4 @@
-import { OneBotListener } from "@sosraciel-lamda/onebot11-proto-client";
+import { OneBotListener } from "@sosraciel-lamda/onebot11-protoclient";
 import { BaseCommInterface, ListenToolBase, SendMessageArg, SendTool, SendVoiceArg } from "../ChatPlantformInterface";
 import { OneBotServiceData, SubtypeDefine, SubtypeDefineTable } from "./Interface";
 import { SLogger, UtilCodec } from "@zwa73/utils";
@@ -17,12 +17,12 @@ const unwarpId = (text?:string)=>{
 }
 
 
-/**处理qq的文本
+/**处理接受的文本
  * @param msg
  */
-function processQQMsg(msg: string) {
+function getTrans(msg: string) {
     //替换kook标志
-    msg = msg.replace(/\(([^S\\]+)\).+?\(\1\)/g, "");
+    msg = msg.replace(/\(([^\s\\]+)\).+?\(\1\)/g, "");
     //替换所有cq码
     msg = msg.replace(/\[CQ:.*?\][ ]*/g, "");
     //替换换行符
@@ -68,7 +68,7 @@ export class OneBotApi extends ListenToolBase implements BaseCommInterface{
                 return;
 
             //处理消息
-            const fixedMsg = processQQMsg(message);
+            const fixedMsg = getTrans(message);
             SLogger.info(
                 `OneBotApi ${self_id} 接收 GroupMessage:\n` +
                 `message: ${message}\n` +
@@ -99,7 +99,7 @@ export class OneBotApi extends ListenToolBase implements BaseCommInterface{
                 return;
 
             //处理消息
-            const fixedMsg = processQQMsg(message);
+            const fixedMsg = getTrans(message);
             SLogger.info(`OneBotApi ${self_id} 接收 PrivateMessage:\n` +
                 `message: ${message}\n` +
                 `fixedMsg: ${fixedMsg}\n` +

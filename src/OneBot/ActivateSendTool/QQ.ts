@@ -1,5 +1,5 @@
 import { UtilFunc, match } from "@zwa73/utils";
-import { OneBotSender, CQCodeTool } from "@sosraciel-lamda/onebot11-proto-client";
+import { OneBotSender, CQCodeTool } from "@sosraciel-lamda/onebot11-protoclient";
 import { FfmpegTool } from "@zwa73/audio-utils";
 import { chkType } from "./Utils";
 import { SendMessageArg, SendVoiceArg, SendTool } from "@/src/ChatPlantformInterface";

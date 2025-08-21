@@ -1,5 +1,5 @@
 import { SendMessageArg, SendTool, SendVoiceArg } from "@/src/ChatPlantformInterface";
-import { CQCodeTool, OneBotSender } from "@sosraciel-lamda/onebot11-proto-client";
+import { CQCodeTool, OneBotSender } from "@sosraciel-lamda/onebot11-protoclient";
 import { chkType } from "./Utils";
 import { match, sleep, SLogger, UtilFT } from "@zwa73/utils";
 import { AudioCache } from "@/src/Utils";
